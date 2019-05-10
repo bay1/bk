@@ -21,7 +21,7 @@ $.ajaxSetup({
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrftoken = getCookie('openpaas_test_v2_csrftoken');
+            var csrftoken = getCookie('bay1_csrftoken');
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }

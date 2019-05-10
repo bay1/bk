@@ -7,11 +7,36 @@
 
 {% block navigation %}
 	<li class="king-navbar-active"><a href="{{ SITE_URL }}"><span>首页</span></a></li>
+    <li class="king-navbar-active"><a href="/helloworld"><span>hello</span></a></li>
 {% endblock %}
 
 {% block content %}
 	<div>
-		<h3>hello bk</h3>
+		<h2 class="text-center">Hello world!</h2>
 	</div>
+    <form class="col-sm-4 col-sm-offset-4">
+        <div class="form-group">
+            <input type="text" placeholder="Input" class="form-control" id="input_keyword" />
+        </div>
+        <h3 id="result_show"></h3>
+    </form>
 {% endblock %}
 
+{% block extra_block %}
+<script type="text/javascript">
+    document.getElementById("input_keyword").addEventListener('input', function() {
+      let data = {
+          'content': $(this).val()
+      };
+      $.ajax({
+        url: '/helloworld/',
+        data: JSON.stringify(data),
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          document.getElementById("result_show").innerText=data['message'];
+        }
+      });
+    });
+</script>
+{% endblock %}

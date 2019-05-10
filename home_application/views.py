@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+from django.http import HttpResponse
 from django.shortcuts import render
 
 
@@ -15,4 +17,9 @@ def hello(request):
     """
     测试页面
     """
+    if request.method == 'POST':
+        hello_form = json.loads(request.body)
+        if hello_form and 'content' in hello_form.keys():
+            result = {'message': 'Congratulation！' if hello_form['content'] == 'Hello Blueking' else 'None'}
+            return HttpResponse(json.dumps(result), content_type='application/json')
     return render(request, 'home_application/hello.html')
