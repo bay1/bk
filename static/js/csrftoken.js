@@ -21,7 +21,7 @@ $.ajaxSetup({
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrftoken = getCookie('bay1_csrftoken');
+            var csrftoken = getCookie(app_code + '_csrftoken');
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }

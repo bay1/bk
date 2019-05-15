@@ -20,22 +20,22 @@
 		.container{
 			width:auto;
 			min-width: 1200px;
-			max-width:1400px;
+			max-width: 1400px;
 		}
 	</style>
 	{% endblock %}
 </head>
 <body>
     <!--顶部导航 Start-->
-	<nav class="navbar navbar-default king-horizontal-nav2" role="navigation">
+	<nav class="king-horizontal-nav4" role="navigation">
 	    <div class="container" style="width: 100%;">
-	        <div class="navbar-header col-md-4 col-sm-4 col-xs-4 logo">
-	            <a class="navbar-brand" href="{{ SITE_URL }}" style="font-size:24px;padding-top: 15px;color: #438bca;">
-	                蓝鲸开发框架(Django模板)
-	            </a>
-	        </div>
-	        <div class="collapse navbar-collapse navbar-responsive-collapse col-md-8 col-sm-8 col-xs-8" id="king-example-navbar-collapse-2" style="float:right;">
-	            <ul class="nav navbar-nav" style="float:right;">
+            <div class="logo_wrap">
+                <a class="logo" title="" href="{{ SITE_URL }}">
+                    <img src="https://magicbox.bk.tencent.com/static_api/v3/bk/images/logo3.png" alt="" class="logo mt10 ml20">
+                </a>
+            </div>
+	        <div class="nav_wrap tmp">
+	            <ul>
 					{% block navigation %}
 	                <li class=""><a href="{{ SITE_URL }}"><span>首页</span></a></li>
 	                <li class=""><a href="{{ SITE_URL }}contact/"><span>联系我们</span></a></li>

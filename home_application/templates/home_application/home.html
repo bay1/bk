@@ -6,13 +6,14 @@
 {% endblock %}
 
 {% block navigation %}
-	<li class="king-navbar-active"><a href="{{ SITE_URL }}"><span>首页</span></a></li>
-    <li class="king-navbar-active"><a href="{{ SITE_URL }}helloworld"><span>hello</span></a></li>
+	<li class="active"><a href="{{ SITE_URL }}"><span>首页</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}helloworld"><span>Hello</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}hostdisk"><span>主机磁盘</span></a></li>
 {% endblock %}
 
 {% block content %}
 	<div>
-		<h3>蓝鲸开发框架<small>助力你的自动化</small></h3>
+		<h3 class="text-center">蓝鲸开发框架<small>助力你的自动化</small></h3>
 	</div>
 {% endblock %}
 

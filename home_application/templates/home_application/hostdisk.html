@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>蓝鲸开发框架</title>
+    {{ block.super }}
+    <link href="{{ REMOTE_STATIC_URL }}v3/assets/fontawesome/css/font-awesome.min.css" type="text/css"
+          rel="stylesheet">
+    <link href="{{ REMOTE_STATIC_URL }}v3/assets/select2-3.5.2/select2.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block navigation %}
+    <li class=""><a href="{{ SITE_URL }}"><span>首页</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}helloworld"><span>Hello</span></a></li>
+    <li class="active"><a href="{{ SITE_URL }}hostdisk"><span>主机磁盘</span></a></li>
+{% endblock %}
+
+{% block content %}
+    <div class="king-layout1-main mt15">
+        <div class="panel king-panel1 mb0">
+            <div class="panel-heading king-panel-head1 king-panel-top1">
+                <h3 class="panel-title">数据表格</h3>
+            </div>
+            <div class="clearfix m10">
+                <form class="form-inline king-search-form king-no-bg pull-left">
+                    <div class="form-group">
+                        <div class="input-group king-input-group">
+
+                            <div class="plugin3_demo" id="plugin3_demo3" style="display:inline-block;">
+                                <!-- select2 通过ajax start -->
+                                <div class="select2-container select2_box select2-container-active" id="s2id_autogen5"
+                                     style="width:200px;">
+                                    <label for="s2id_autogen6" class="select2-offscreen"></label>
+                                    <input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true"
+                                           role="button" aria-labelledby="select2-chosen-6" id="s2id_autogen6">
+                                </div>
+                                <input type="hidden" class="select2_box" style="width: 300px; display: none;"
+                                       tabindex="-1" title="" value="1">
+                                <!-- select2 通过ajax end -->
+                                <a class="king-btn-demo king-btn king-round king-primary" title="搜索" id="host_search">
+                                    <i class="fa fa-search btn-icon"></i>搜索
+                                </a>
+                                <a class="king-btn-demo king-btn king-round king-warning" title="" data-toggle="modal"
+                                   data-target="#addUserModal">
+                                    <i class="fa fa-cog btn-icon"></i>录入数据
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-success">
+
+        <table class="table table-hover table-striped table-bordered">
+            <thead>
+            <tr class="active">
+                <th style="width:45px">ID</th>
+                <th style="min-width:100px">系统名称</th>
+                <th style="min-width:100px">磁盘名称</th>
+                <th style="min-width:150px">IP</th>
+                <th style="min-width:150px">录入时间</th>
+            </tr>
+            </thead>
+            <tbody id="datas">
+            {% for host in hosts %}
+                <tr style="display: table-row; opacity: 1;">
+                    <td>{{ host.id }}</td>
+                    <td>{{ host.system }}</td>
+                    <td>{{ host.disk }}</td>
+                    <td>
+                        {{ host.ip }}
+                    </td>
+                    <td>{{ host.add_time }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!--HTML-->
+    <!-- 模态框示例（Modal） -->
+    <form method="post" action="" class="form-horizontal" role="form" id="form_data" onsubmit="return check_form()"
+          style="margin: 20px;">
+        <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            录入主机
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="host_ip" class="col-sm-3 control-label">主机IP</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="host_ip" name="ip"
+                                           value="1.0.0.2"
+                                           placeholder="请输入主机IP">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="host_system" class="col-sm-3 control-label">系统名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="system" value="123" id="host_system"
+                                           placeholder="系统名称">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="host_disk" class="col-sm-3 control-label">磁盘名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="disk" value="///" id="host_disk"
+                                           placeholder="磁盘名称">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="king-btn-demo king-btn king-round king-danger"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="submit" class="king-btn-demo king-btn king-round king-success" title="保存">保存
+                        </button>
+                        <span id="tip"> </span>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </form>
+{% endblock %}
+{% block extra_block %}
+    <!--JS-->
+    <script src="{{ REMOTE_STATIC_URL }}v3/assets/select2-3.5.2/select2.js"></script>
+    <script>
+        // select2 通过ajax数据生成
+        // 数据格式：{"results":[{ "id": 0, "text": "奥迪" }, { "id": 1, "text": "奔驰" }, { "id": 2, "text": "宝马" }]}
+        // alert(2)
+        $("#plugin3_demo3 .select2_box").select2({
+            ajax: {
+                url: '{{ SITE_URL }}gethostips/',
+                cache: false,
+                //对返回的数据进行处理
+                results: function (data) {
+                    return data;
+                }
+            }
+
+        });
+        document.getElementById("host_search").addEventListener('click', function () {
+            let data = {
+                'ip': document.getElementsByClassName('select2-chosen')[0].innerHTML
+            };
+            $.ajax({
+                url: '{{ SITE_URL }}searchhost/',
+                data: JSON.stringify(data),
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    var result = '';
+                    var hosts = data['data'];
+                    for (j = 0; j < hosts.length; j++) {
+                        var host = hosts[j];
+                        result += '<tr style="display: table-row; opacity: 1;">\n' +
+                            '                    <td>' + host['id'] + '</td>\n' +
+                            '                    <td>' + host['system'] + '</td>\n' +
+                            '                    <td>' + host['disk'] + '</td>\n' +
+                            '                    <td>' + host['ip'] + '</td>\n' +
+                            '                    <td>' + host['add_time'] + '</td>\n' +
+                            '                </tr>';
+                    }
+                    document.getElementById("datas").innerHTML = result;
+                }
+            });
+        });
+
+        // 提交表单
+        function check_form() {
+            var host_ip = $.trim($('#host_ip').val());
+            var host_system = $.trim($('#host_system').val());
+            var host_disk = $.trim($('#host_disk').val());
+
+            if (!host_ip || !host_disk || !host_system) {
+                alert('请全部填写');
+                return false;
+            }
+            var form_data = $('#form_data').serialize();
+
+            $.ajax(
+                {
+                    url: "{{ SITE_URL }}addhost/",
+                    data: form_data,
+                    type: "post",
+                    success: function (data) {
+                        console.log(data);
+                        if (data['result'] === 'success') {
+                            $("#tip").html("<span style='color:blueviolet'>保存成功！</span>");
+
+                            location.reload();
+                        } else {
+                            $("#tip").html("<span style='color:red'>失败，请重试</span>");
+                        }
+                    },
+                    error: function () {
+                        alert('请求出错');
+                    },
+                    complete: function () {
+                        $('#acting_tips').hide();
+                    }
+                });
+
+            return false;
+        }
+    </script>
+
+{% endblock %}
