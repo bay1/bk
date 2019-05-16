@@ -93,7 +93,7 @@ def get_capacity_task():
     return 0
 
 
-@periodic_task(run_every=datetime.timedelta(hours=1))
+@periodic_task(run_every=datetime.timedelta(seconds=5))
 def get_capacity_periodic():
     """
     获取磁盘使用率周期执行定义

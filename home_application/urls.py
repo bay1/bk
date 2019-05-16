@@ -19,9 +19,9 @@ from home_application import views
 
 urlpatterns = (
     url(r'^$', views.home),
-    url(r'^helloworld/$', views.hello),
-    url(r'^hostdisk/$', views.host_disk),
-    url(r'^gethostips/$', views.get_host_ip),
-    url(r'^addhost/$', views.add_host),
-    url(r'^searchhost/$', views.search_host)
+    url(r'^hello_world/$', views.hello),
+    url(r'^host_disk/$', views.host_disk),
+    url(r'^get_host_ips/$', views.get_host_ip),
+    url(r'^add_host/$', views.add_host),
+    url(r'^search_host/$', views.search_host)
 )

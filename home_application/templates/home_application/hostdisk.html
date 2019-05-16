@@ -11,8 +11,8 @@
 
 {% block navigation %}
     <li class=""><a href="{{ SITE_URL }}"><span>首页</span></a></li>
-    <li class=""><a href="{{ SITE_URL }}helloworld"><span>Hello</span></a></li>
-    <li class="active"><a href="{{ SITE_URL }}hostdisk"><span>主机磁盘</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}hello_world"><span>Hello</span></a></li>
+    <li class="active"><a href="{{ SITE_URL }}host_disk"><span>主机磁盘</span></a></li>
     <li class=""><a href="{{ SITE_URL }}get_capacity"><span>使用率采集</span></a></li>
 {% endblock %}
 
@@ -144,7 +144,7 @@
         // alert(2)
         $("#plugin3_demo3 .select2_box").select2({
             ajax: {
-                url: '{{ SITE_URL }}gethostips/',
+                url: '{{ SITE_URL }}get_host_ips/',
                 cache: false,
                 //对返回的数据进行处理
                 results: function (data) {
@@ -158,7 +158,7 @@
                 'ip': document.getElementsByClassName('select2-chosen')[0].innerHTML
             };
             $.ajax({
-                url: '{{ SITE_URL }}searchhost/',
+                url: '{{ SITE_URL }}search_host/',
                 data: JSON.stringify(data),
                 type: 'POST',
                 dataType: 'json',
@@ -195,7 +195,7 @@
 
             $.ajax(
                 {
-                    url: "{{ SITE_URL }}addhost/",
+                    url: "{{ SITE_URL }}add_host/",
                     data: form_data,
                     type: "post",
                     success: function (data) {
