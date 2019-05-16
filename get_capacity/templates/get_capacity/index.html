@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>蓝鲸开发框架</title>
+    {{ block.super }}
+{% endblock %}
+
+{% block navigation %}
+    <li class=""><a href="{{ SITE_URL }}"><span>首页</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}helloworld"><span>Hello</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}hostdisk"><span>主机磁盘</span></a></li>
+    <li class="active"><a href="{{ SITE_URL }}get_capacity"><span>使用率采集</span></a></li>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h3 class="text-center">/ 使用率定期采集展示
+            <small>10.0.0.2</small>
+        </h3>
+    </div>
+
+    <div id="chart3_demo"
+         style="height: 500px; border: 1px solid rgb(204, 204, 204); padding: 10px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0);"
+         _echarts_instance_="1558017009440">
+        <div style="position: relative; overflow: hidden; width: 898px; height: 500px;">
+            <div data-zr-dom-id="bg" class="zr-element"
+                 style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none;"></div>
+            <canvas width="1122" height="625" data-zr-dom-id="0" class="zr-element"
+                    style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
+            <canvas width="1122" height="625" data-zr-dom-id="1" class="zr-element"
+                    style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
+            <canvas width="1122" height="625" data-zr-dom-id="_zrender_hover_" class="zr-element"
+                    style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
+            <div class="echarts-dataview"
+                 style="position: absolute; display: block; overflow: hidden; transition: height 0.8s ease 0s, background-color 1s ease 0s; z-index: 1; left: 0px; top: 0px; width: 898px; height: 0px; background-color: rgb(240, 255, 255);"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_block %}
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/echarts-2.0/echarts-all.js"></script>
+    <script type="text/javascript">
+        // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+
+        // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+        // standard line chart
+        function createEStandLineChart(conf) {
+            var myChart = echarts.init(document.getElementById(conf.selector));
+            var legendData = [];
+            for (var i = 0; i < conf.data.series.length; i++) {
+                legendData.push(conf.data.series[i].name)
+            }
+            myChart.setOption({
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    y: 'bottom',
+                    data: legendData
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {show: true},
+                        dataView: {show: true, readOnly: false},
+                        magicType: {show: true, type: ['bar', 'line']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                calculable: true,
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: conf.data.xAxis
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        splitArea: {show: true}
+                    }
+                ],
+                series: conf.data.series
+            });
+        }
+
+        function initEStandLineChart(conf) {
+            $.ajax({
+                url: conf.url,
+                type: 'GET',
+                dataType: conf.dataType,
+                success: function (res) {
+                    //获取数据成功
+                    if (res.result) {
+                        createEStandLineChart({
+                            selector: conf.containerId, // 图表容器
+                            data: res.data, // 图表数据
+                        });
+                    }
+                }
+            })
+        }
+
+        $(function () {
+            initEStandLineChart({
+                url: '{{ SITE_URL }}get_capacity/get_disk_usages/',
+                dataType: 'json',
+                containerId: 'chart3_demo'
+            });
+        });
+    </script>
+{% endblock %}

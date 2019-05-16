@@ -13,6 +13,7 @@
     <li class=""><a href="{{ SITE_URL }}"><span>首页</span></a></li>
     <li class=""><a href="{{ SITE_URL }}helloworld"><span>Hello</span></a></li>
     <li class="active"><a href="{{ SITE_URL }}hostdisk"><span>主机磁盘</span></a></li>
+    <li class=""><a href="{{ SITE_URL }}get_capacity"><span>使用率采集</span></a></li>
 {% endblock %}
 
 {% block content %}
@@ -108,14 +109,14 @@
                             <div class="form-group">
                                 <label for="host_system" class="col-sm-3 control-label">系统名称</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="system" value="123" id="host_system"
+                                    <input type="text" class="form-control" name="system" value="linux" id="host_system"
                                            placeholder="系统名称">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="host_disk" class="col-sm-3 control-label">磁盘名称</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="disk" value="///" id="host_disk"
+                                    <input type="text" class="form-control" name="disk" value="/" id="host_disk"
                                            placeholder="磁盘名称">
                                 </div>
                             </div>
