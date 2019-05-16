@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import time
 import logging
 import datetime
@@ -11,7 +12,6 @@ from config import APP_CODE
 from get_capacity.models import DiskUsage
 from blueapps.account.models import User
 from blueking.component.shortcuts import get_client_by_user
-
 
 logger = logging.getLogger('celery')
 
@@ -60,7 +60,7 @@ def get_job_instance_log(client, job_instance_id):
         "bk_biz_id": 3,
         "job_instance_id": job_instance_id
     }
-    time.sleep(2)  # 延时2s, 快速执行脚本需要一定的时间， 后期可以用celery串行两个函数
+    time.sleep(2)  # todo 延时2s, 快速执行脚本需要一定的时间， 后期可以用celery串行两个函数
     return client.job.get_job_instance_log(kwargs)
 
 
@@ -84,10 +84,16 @@ def get_capacity_task():
 
         # 如果日志查询成功，提取内容
         if get_job_instance_log_result['message'] == 'success':
-            log_content = get_job_instance_log_result['data'][0]['step_results'][0]['ip_logs'][0]['log_content']
-            disk_usage = int(log_content.strip('\n'))
-            DiskUsage.objects.create(disk_usage=disk_usage)
-            logger.info(u'usage = ' + str(disk_usage) + '%, deposited into the database->success')
+            # 匹配log_content规则
+            regex = r"(?<='log_content': ').*?(?=')"
+
+            log_content = re.findall(regex, str(get_job_instance_log_result), re.MULTILINE)
+            # 提取数字
+            disk_usage = re.sub('\D', "", log_content[0])
+
+            DiskUsage.objects.create(disk_usage=int(disk_usage))
+            logger.info(u'usage = ' + disk_usage + '%, deposited into the database->success')
+            return 1
     else:
         logger.info(u'request false')
     return 0
