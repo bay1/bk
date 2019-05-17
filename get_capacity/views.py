@@ -14,6 +14,40 @@ def index(request):
 
 
 @login_exempt
+def api_disk_usage(request):
+    """
+    磁盘使用率API接口
+    """
+    ip = request.GET.get('ip', '')
+    system = request.GET.get('system', '')
+    mounted = request.GET.get('mounted', '')
+    disk_usages = DiskUsage.objects.all()
+    if ip:
+        disk_usages = disk_usages.filter(ip=ip)
+    if system:
+        disk_usages = disk_usages.filter(system=system)
+    if mounted:
+        disk_usages = disk_usages.filter(mounted=mounted)
+
+    data_list = []
+    for _data in disk_usages:
+        data_list.append(
+            {
+                'ip': _data.ip,
+                'system': _data.system,
+                'mounted': _data.mounted,
+                'use': _data.value,
+                'create_time': _data.add_time.strftime('%Y/%m/%d %H:%M:%S')
+            }
+        )
+
+    return JsonResponse({
+        "result": True,
+        "data": data_list,
+        "message": 'ok'
+    })
+
+
 def get_disk_usages(request):
     """
     返回定时磁盘采集数据

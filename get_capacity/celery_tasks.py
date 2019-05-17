@@ -73,6 +73,7 @@ def execute_script_log(script_content, script_param):
 
     # base64 快速执行脚本需要的参数，并执行client
     fast_execute_script_result = fast_execute_script(client, script_content, script_param)
+    logger.info(fast_execute_script_result)
 
     # 如果快速脚本调用成功，执行log日志查询，获取执行内容
     if fast_execute_script_result['message'] == 'success':
