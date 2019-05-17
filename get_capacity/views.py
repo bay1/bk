@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from get_capacity.models import DiskUsage, MemoryUsage
+from blueapps.account.decorators import login_exempt
 
 
 def index(request):
@@ -12,6 +13,7 @@ def index(request):
     return render(request, 'get_capacity/index.html')
 
 
+@login_exempt
 def get_disk_usages(request):
     """
     返回定时磁盘采集数据
