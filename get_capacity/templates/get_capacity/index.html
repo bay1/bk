@@ -14,25 +14,16 @@
 
 {% block content %}
     <div>
-        <h3 class="text-center">/ 使用率定期采集展示
+        <h3 class="text-center">定期采集数据
             <small>10.0.0.2</small>
         </h3>
     </div>
-
-    <div id="chart3_demo"
-         style="height: 500px; border: 1px solid rgb(204, 204, 204); padding: 10px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0);"
-         _echarts_instance_="1558017009440">
-        <div style="position: relative; overflow: hidden; width: 898px; height: 500px;">
-            <div data-zr-dom-id="bg" class="zr-element"
-                 style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none;"></div>
-            <canvas width="1122" height="625" data-zr-dom-id="0" class="zr-element"
-                    style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
-            <canvas width="1122" height="625" data-zr-dom-id="1" class="zr-element"
-                    style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
-            <canvas width="1122" height="625" data-zr-dom-id="_zrender_hover_" class="zr-element"
-                    style="position: absolute; left: 0px; top: 0px; width: 898px; height: 500px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
-            <div class="echarts-dataview"
-                 style="position: absolute; display: block; overflow: hidden; transition: height 0.8s ease 0s, background-color 1s ease 0s; z-index: 1; left: 0px; top: 0px; width: 898px; height: 0px; background-color: rgb(240, 255, 255);"></div>
+    <div class="king-page-box">
+        <div class="king-container clearfix">
+            <div style="height: 300px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0); cursor: default;"
+                 id="chart_1558062545316" class="king-chart-box chart-area " _echarts_instance_="1558062514445"></div>
+            <div style="height: 300px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0); cursor: default;"
+                 id="chart_1558062547908" class="king-chart-box chart-area " _echarts_instance_="1558062514446"></div>
         </div>
     </div>
 {% endblock %}
@@ -40,13 +31,9 @@
 {% block extra_block %}
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/echarts-2.0/echarts-all.js"></script>
     <script type="text/javascript">
-        // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
-
-        // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
-        // standard line chart
         function createEStandLineChart(conf) {
             var myChart = echarts.init(document.getElementById(conf.selector));
-            var legendData = [];
+            var legendData = []
             for (var i = 0; i < conf.data.series.length; i++) {
                 legendData.push(conf.data.series[i].name)
             }
@@ -101,13 +88,24 @@
                 }
             })
         }
-
+    </script>
+    <script>
+        $(function () {
+            initEStandLineChart({
+                url: '{{ SITE_URL }}get_capacity/get_memory_usages/',
+                dataType: 'json',
+                containerId: 'chart_1558062545316'
+            });
+        });
+    </script>
+    <script>
         $(function () {
             initEStandLineChart({
                 url: '{{ SITE_URL }}get_capacity/get_disk_usages/',
                 dataType: 'json',
-                containerId: 'chart3_demo'
+                containerId: 'chart_1558062547908'
             });
         });
     </script>
+
 {% endblock %}
