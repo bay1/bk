@@ -19,6 +19,5 @@ from get_capacity import views
 urlpatterns = (
     url(r'^$', views.index),
     url(r'^get_disk_usages/$', views.get_disk_usages),
-    url(r'^get_memory_usages/$', views.get_memory_usages),
-    url(r'^api_disk_usage/$', views.api_disk_usage),
+    url(r'^get_memory_usages/$', views.get_memory_usages)
 )

@@ -23,5 +23,6 @@ urlpatterns = (
     url(r'^host_disk/$', views.host_disk),
     url(r'^get_host_ips/$', views.get_host_ip),
     url(r'^add_host/$', views.add_host),
-    url(r'^search_host/$', views.search_host)
+    url(r'^search_host/$', views.search_host),
+    url(r'^api/get_dfusage_bay1/$', views.api_disk_usage),
 )
