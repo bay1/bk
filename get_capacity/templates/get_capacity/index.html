@@ -13,22 +13,52 @@
 {% endblock %}
 
 {% block content %}
-    <div>
-        <h3 class="text-center">定期采集数据
-            <small>10.0.0.2</small>
-        </h3>
-    </div>
+    <body class="bg-white" data-bg-color="bg-white">
     <div class="king-page-box">
-        <div class="king-container clearfix">
-{#            <div style="height: 300px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0); cursor: default;"#}
-{#                 id="chart_1558062545316" class="king-chart-box chart-area " _echarts_instance_="1558062514445"></div>#}
-            <div style="height: 300px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0); cursor: default;"
-                 id="chart_1558062547908" class="king-chart-box chart-area " _echarts_instance_="1558062514446"></div>
+        <div class="king-layout1-header"></div>
+        <div class="king-layout2-main mt15" style="width:960px;">
+            <form class="form-horizontal">
+                <div class="form-group clearfix ">
+                    <label class="col-sm-3 control-label bk-lh30 pt0">IP地址：</label>
+                    <div class="col-sm-6">
+                        <select name="" id="host_ip" class="form-control bk-valign-top">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group clearfix ">
+                    <label class="col-sm-3 control-label bk-lh30 pt0">系统：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control bk-valign-top" id="host_system" placeholder=""></div>
+                </div>
+                <div class="form-group clearfix ">
+                    <label class="col-sm-3 control-label bk-lh30 pt0">磁盘：</label>
+                    <div class="col-sm-6">
+                        <select name="" id="host_disk" class="form-control bk-valign-top">
+                        </select>
+                    </div>
+                </div>
+                <div class="container-fluid mb0 ">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div style="height: 300px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0);"
+                                 id="chart_1558345623849" class="king-chart-box chart-area "
+                                 _echarts_instance_="1558345559462"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="height: 300px; -webkit-tap-highlight-color: transparent; user-select: none; background-color: rgba(0, 0, 0, 0); cursor: default;"
+                                 id="chart_1558345625982" class="king-chart-box chart-area "
+                                 _echarts_instance_="1558345559463"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+
 {% endblock %}
 
 {% block extra_block %}
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/js/kendo.all.min.js"></script>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/echarts-2.0/echarts-all.js"></script>
     <script type="text/javascript">
         function createEStandLineChart(conf) {
@@ -72,40 +102,83 @@
             });
         }
 
-        function initEStandLineChart(conf) {
+        window.system = '';
+        window.hosts_result = '';
+        document.getElementById("host_ip").addEventListener('click', function () {
             $.ajax({
-                url: conf.url,
+                url: '{{ SITE_URL }}get_host_ips/',
                 type: 'GET',
-                dataType: conf.dataType,
-                success: function (res) {
-                    //获取数据成功
-                    if (res.result) {
+                success: function (data) {
+                    var result = '';
+                    window.hosts_result = data['results'];
+                    for (var index in window.hosts_result) {
+                        hosts_dict = window.hosts_result[index];
+                        window.system = hosts_dict['system'];
+                        result += '<option>' + hosts_dict['text'] + '</option>';
+                    }
+                    document.getElementById("host_ip").innerHTML = result;
+                    document.getElementById('host_system').value = window.system;
+                }
+            });
+        });
+
+        document.getElementById("host_ip").addEventListener('change', function () {
+            var value = $('#host_ip').val();
+            window.ip = value;
+            for (var index in window.hosts_result) {
+                hosts_dict = window.hosts_result[index];
+                if (hosts_dict['text'] === value) {
+                    window.system = hosts_dict['system'];
+                    document.getElementById('host_system').value = hosts_dict['system'];
+                }
+            }
+        });
+
+        document.getElementById("host_disk").addEventListener('click', function () {
+            var result = '';
+            var ip = $('#host_ip').val();
+            for (var index in window.hosts_result) {
+                hosts_dict = window.hosts_result[index];
+                if (hosts_dict['text'] === ip) {
+                    result += '<option>' + hosts_dict['disk'] + '</option>';
+                }
+            }
+            document.getElementById("host_disk").innerHTML = result;
+        });
+
+        $("#host_disk").bind('DOMNodeInserted', function () {
+            var ip = $('#host_ip').val();
+            var system = $('#host_system').val();
+            var disk = $('#host_disk').val();
+            console.log(ip, system, disk);
+            let data = {
+                'ip': ip,
+                'system': system,
+                'disk': disk
+            };
+            $.ajax({
+                url: '{{ SITE_URL }}get_capacity/get_usage_data/',
+                {#url: '{{ SITE_URL }}api/get_dfusage_bay1?ip=' + ip + '&system=' + system + '&disk=' + disk,#}
+                data: JSON.stringify(data),
+                type: 'POST',
+                dataType: 'json',
+                {#type: 'GET',#}
+                success: function (data) {
+                    if (data['result']) {
+                        result_data = data['data'][0];
                         createEStandLineChart({
-                            selector: conf.containerId, // 图表容器
-                            data: res.data, // 图表数据
+                            selector: 'chart_1558345623849', // 图表容器
+                            data: result_data['disk_usage'], // 图表数据
+                        });
+                        createEStandLineChart({
+                            selector: 'chart_1558345625982', // 图表容器
+                            data: result_data['memory_usage'], // 图表数据
                         });
                     }
                 }
-            })
-        }
-    </script>
-    <script>
-        $(function () {
-            initEStandLineChart({
-                url: '{{ SITE_URL }}get_capacity/get_memory_usages/',
-                dataType: 'json',
-                containerId: 'chart_1558062545316'
             });
         });
-    </script>
-    <script>
-        $(function () {
-            initEStandLineChart({
-                url: '{{ SITE_URL }}get_capacity/get_disk_usages/',
-                dataType: 'json',
-                containerId: 'chart_1558062547908'
-            });
-        });
+
     </script>
 
 {% endblock %}

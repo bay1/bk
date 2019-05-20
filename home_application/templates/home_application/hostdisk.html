@@ -100,23 +100,24 @@
                             <div class="form-group">
                                 <label for="host_ip" class="col-sm-3 control-label">主机IP</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="host_ip" name="ip"
-                                           value="1.0.0.2"
-                                           placeholder="请输入主机IP">
+                                    <select class="form-control select" id="host_ip" name="ip">
+                                        <option></option>
+                                    </select>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="host_system" class="col-sm-3 control-label">系统名称</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="system" value="linux" id="host_system"
+                                    <input type="text" class="form-control" name="system" value="" id="host_system"
                                            placeholder="系统名称">
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="host_disk" class="col-sm-3 control-label">磁盘名称</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="disk" value="/" id="host_disk"
+                                    <input type="text" class="form-control" name="disk" value="" id="host_disk"
                                            placeholder="磁盘名称">
                                 </div>
                             </div>
@@ -153,6 +154,38 @@
             }
 
         });
+        window.hosts_result = '';
+        document.getElementById("host_ip").addEventListener('click', function () {
+            $.ajax({
+                url: '{{ SITE_URL }}get_cchost_ips/',
+                type: 'GET',
+                success: function (data) {
+                    var result = '';
+                    window.hosts_result = data['data'];
+                    for (var index in window.hosts_result) {
+                        hosts_dict = window.hosts_result[index];
+                        for (var ip in hosts_dict) {
+                            result += '<option>'+ip+'</option>';
+                        }
+                    }
+                    document.getElementById("host_ip").innerHTML = result;
+                }
+            });
+        });
+
+        document.getElementById("host_ip").addEventListener('change', function () {
+            var value = $('.select').val();
+            for (var index in window.hosts_result) {
+                hosts_dict = window.hosts_result[index];
+                for (var ip in hosts_dict) {
+                    if (ip === value){
+                        document.getElementById('host_system').value = hosts_dict[ip];
+                    }
+                }
+            }
+            console.log();
+        });
+
         document.getElementById("host_search").addEventListener('click', function () {
             let data = {
                 'ip': document.getElementsByClassName('select2-chosen')[0].innerHTML
@@ -205,7 +238,7 @@
 
                             location.reload();
                         } else {
-                            $("#tip").html("<span style='color:red'>失败，请重试</span>");
+                            $("#tip").html("<span style='color:red'>失败，" + data['message'] + "请重试</span>");
                         }
                     },
                     error: function () {

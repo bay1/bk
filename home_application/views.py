@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
+
 from django.http import JsonResponse
 from django.shortcuts import render
 
+from config import APP_CODE
 from home_application.models import Host
-from get_capacity.models import DiskUsage
 from blueking.component.shortcuts import get_client_by_request
 from blueapps.account.decorators import login_exempt
 
@@ -34,11 +35,26 @@ def host_disk(request):
     """
     主机磁盘管理
     """
-    client = get_client_by_request(request)
-    test = client.self_server.get_dfusage_bay1()
-    print(test)
+
     hosts = Host.objects.all()
     return render(request, 'home_application/hostdisk.html', {'hosts': hosts})
+
+
+def get_cchost_ips(request):
+    """
+    前端获取可以录入的主机IP的接口
+    """
+    client = get_client_by_request(request)
+    kwags = {
+        "bk_app_code": APP_CODE,
+        "bk_biz_id": 3
+    }
+    cc_hosts = client.cc.search_host(kwags)['data']['info']
+    cc_hosts_ips = []
+    for host in cc_hosts:
+        host = host['host']
+        cc_hosts_ips.append({host['bk_host_innerip']: host['bk_os_name']})
+    return JsonResponse({"data": cc_hosts_ips})
 
 
 def get_host_ip(request):
@@ -51,8 +67,7 @@ def get_host_ip(request):
     for host in hosts:
         if host.ip not in check_ip:
             check_ip.append(host.ip)
-            host_ips.append({"id": host.id, "text": host.ip})
-    # {"results": [{"id": 0, "text": "奥迪"}, {"id": 1, "text": "奔驰"}, {"id": 1, "text": "宝马"}]
+            host_ips.append({"id": host.id, "text": host.ip, "system": host.system, "disk": host.disk})
     return JsonResponse({"results": host_ips})
 
 
@@ -61,10 +76,11 @@ def add_host(request):
     录入主机记录
     """
     form_data = request.POST.dict()
-    if Host.objects.create(**form_data):
+    check_result = Host.check_form_data(**form_data)
+    if check_result[0] and Host.objects.create(**form_data):
         return JsonResponse({"result": "success"})
     else:
-        return JsonResponse({"result": "false"})
+        return JsonResponse({"result": "false", "message": check_result[1]})
 
 
 def search_host(request):
@@ -74,6 +90,7 @@ def search_host(request):
             hosts = Host.objects.filter(ip=host_form['ip']).values()
             return JsonResponse({'data': list(hosts)})
 
+
 @login_exempt
 def api_disk_usage(request):
     """
@@ -81,24 +98,49 @@ def api_disk_usage(request):
     """
     ip = request.GET.get('ip', '')
     system = request.GET.get('system', '')
-    mounted = request.GET.get('mounted', '')
-    disk_usages = DiskUsage.objects.all()
-    if ip:
-        disk_usages = disk_usages.filter(ip=ip)
-    if system:
-        disk_usages = disk_usages.filter(system=system)
-    if mounted:
-        disk_usages = disk_usages.filter(mounted=mounted)
+    mounted = request.GET.get('disk', '')
+    if ip and system and mounted:
+        hosts = Host.objects.filter(ip=ip, system=system, disk=mounted)
+
+    else:
+        return JsonResponse({
+            "result": False,
+            "data": [],
+            "message": '参数不完整'
+        })
 
     data_list = []
-    for _data in disk_usages:
+    for _data in hosts:
+        disk_usages = _data.DiskUsage.all()
+        memory_usages = _data.MemoryUsage.all()
+        disk_usage_add_time, disk_usage_value = model_data_format(disk_usages)
+        memory_usage_add_time, memory_usage_value = model_data_format(memory_usages)
+
         data_list.append(
             {
                 'ip': _data.ip,
                 'system': _data.system,
-                'mounted': _data.mounted,
-                'use': _data.value,
-                'create_time': _data.add_time.strftime('%Y/%m/%d %H:%M:%S')
+                'mounted': _data.disk,
+                'disk_usage': {
+                    "xAxis": disk_usage_add_time,
+                    "series": [
+                        {
+                            "name": "磁盘使用率",
+                            "type": "line",
+                            "data": disk_usage_value
+                        }
+                    ]
+                },
+                'memory_usage': {
+                    "xAxis": memory_usage_add_time,
+                    "series": [
+                        {
+                            "name": "内存使用率",
+                            "type": "line",
+                            "data": memory_usage_value
+                        }
+                    ]
+                }
             }
         )
 
@@ -107,3 +149,12 @@ def api_disk_usage(request):
         "data": data_list,
         "message": 'ok'
     })
+
+
+def model_data_format(usages):
+    usage_add_time = []
+    usage_value = []
+    for usage in usages:
+        usage_add_time.append(usage.add_time.strftime("%Y/%m/%d %H:%M:%S"))
+        usage_value.append(usage.value)
+    return usage_add_time, usage_value

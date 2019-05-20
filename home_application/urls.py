@@ -25,4 +25,5 @@ urlpatterns = (
     url(r'^add_host/$', views.add_host),
     url(r'^search_host/$', views.search_host),
     url(r'^api/get_dfusage_bay1/$', views.api_disk_usage),
+    url(r'^get_cchost_ips/$', views.get_cchost_ips)
 )

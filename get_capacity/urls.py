@@ -18,6 +18,5 @@ from django.conf.urls import url
 from get_capacity import views
 urlpatterns = (
     url(r'^$', views.index),
-    url(r'^get_disk_usages/$', views.get_disk_usages),
-    url(r'^get_memory_usages/$', views.get_memory_usages)
+    url(r'^get_usage_data/$', views.get_usage_data)
 )
