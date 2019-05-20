@@ -164,6 +164,7 @@
                 dataType: 'json',
                 {#type: 'GET',#}
                 success: function (data) {
+                    console.log(data);
                     if (data['result']) {
                         result_data = data['data'][0];
                         createEStandLineChart({
