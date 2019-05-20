@@ -19,7 +19,7 @@ DATABASES.update(
     {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': APP_CODE,
+            'NAME': 'bay12',
             'USER': 'root',
             'PASSWORD': 'Uqv.83WuNm',
             'HOST': '10.0.1.192',
