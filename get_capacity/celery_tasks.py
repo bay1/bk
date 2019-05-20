@@ -138,7 +138,7 @@ def get_capacity_memory():
             logger.info(u"此IP不在管控范围")
 
 
-@periodic_task(run_every=datetime.timedelta(minutes=2))
+@periodic_task(run_every=datetime.timedelta(hours=2))
 def get_disk_periodic():
     """
     获取磁盘使用率周期执行定义
@@ -147,7 +147,7 @@ def get_disk_periodic():
     logger.info(u'get disk work starting')
 
 
-@periodic_task(run_every=datetime.timedelta(minutes=2))
+@periodic_task(run_every=datetime.timedelta(hours=2))
 def get_memory_periodic():
     """
     获取内存使用率周期执行定义
