@@ -94,7 +94,7 @@ def search_host(request):
 @login_exempt
 def api_disk_usage(request):
     """
-    磁盘使用率API接口
+    磁盘使用率API接口 api/get_dfusage_bay1
     """
     ip = request.GET.get('ip', '')
     system = request.GET.get('system', '')
