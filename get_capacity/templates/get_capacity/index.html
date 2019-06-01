@@ -21,8 +21,7 @@
                 <div class="form-group clearfix ">
                     <label class="col-sm-3 control-label bk-lh30 pt0">IP地址：</label>
                     <div class="col-sm-6">
-                        <select name="" id="host_ip" class="form-control bk-valign-top">
-                        </select>
+                        <input name="" id="host_ip" class="form-control bk-valign-top">
                     </div>
                 </div>
                 <div class="form-group clearfix ">
@@ -32,9 +31,12 @@
                 </div>
                 <div class="form-group clearfix ">
                     <label class="col-sm-3 control-label bk-lh30 pt0">磁盘：</label>
-                    <div class="col-sm-6">
-                        <select name="" id="host_disk" class="form-control bk-valign-top">
-                        </select>
+                    <div class="col-sm-3">
+                        <input name="" id="host_disk" class="form-control bk-valign-top">
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="submit" class="king-btn-demo king-btn king-round king-success search-button" title="保存">保存
+                        </button>
                     </div>
                 </div>
                 <div class="container-fluid mb0 ">
@@ -102,51 +104,8 @@
             });
         }
 
-        window.system = '';
-        window.hosts_result = '';
-        document.getElementById("host_ip").addEventListener('click', function () {
-            $.ajax({
-                url: '{{ SITE_URL }}get_host_ips/',
-                type: 'GET',
-                success: function (data) {
-                    var result = '';
-                    window.hosts_result = data['results'];
-                    for (var index in window.hosts_result) {
-                        hosts_dict = window.hosts_result[index];
-                        window.system = hosts_dict['system'];
-                        result += '<option>' + hosts_dict['text'] + '</option>';
-                    }
-                    document.getElementById("host_ip").innerHTML = result;
-                    document.getElementById('host_system').value = window.system;
-                }
-            });
-        });
-
-        document.getElementById("host_ip").addEventListener('change', function () {
-            var value = $('#host_ip').val();
-            window.ip = value;
-            for (var index in window.hosts_result) {
-                hosts_dict = window.hosts_result[index];
-                if (hosts_dict['text'] === value) {
-                    window.system = hosts_dict['system'];
-                    document.getElementById('host_system').value = hosts_dict['system'];
-                }
-            }
-        });
-
-        document.getElementById("host_disk").addEventListener('click', function () {
-            var result = '';
-            var ip = $('#host_ip').val();
-            for (var index in window.hosts_result) {
-                hosts_dict = window.hosts_result[index];
-                if (hosts_dict['text'] === ip) {
-                    result += '<option>' + hosts_dict['disk'] + '</option>';
-                }
-            }
-            document.getElementById("host_disk").innerHTML = result;
-        });
-
-        $("#host_disk").bind('DOMNodeInserted', function () {
+        // 此处代码用户体验不友好，仅为示例
+        $(".search-button").bind('click', function () {
             var ip = $('#host_ip').val();
             var system = $('#host_system').val();
             var disk = $('#host_disk').val();
@@ -158,7 +117,6 @@
             };
             $.ajax({
                 url: '{{ SITE_URL }}get_capacity/get_usage_data/',
-                {#url: '{{ SITE_URL }}api/get_dfusage_bay1?ip=' + ip + '&system=' + system + '&disk=' + disk,#}
                 data: JSON.stringify(data),
                 type: 'POST',
                 dataType: 'json',

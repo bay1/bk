@@ -155,8 +155,7 @@
 
         });
         window.hosts_result = '';
-        document.getElementById("host_ip").addEventListener('click', function () {
-            $.ajax({
+        $.ajax({
                 url: '{{ SITE_URL }}get_cchost_ips/',
                 type: 'GET',
                 success: function (data) {
@@ -170,11 +169,11 @@
                     }
                     document.getElementById("host_ip").innerHTML = result;
                 }
-            });
         });
 
         document.getElementById("host_ip").addEventListener('change', function () {
             var value = $('.select').val();
+            console.log(window.hosts_result);
             for (var index in window.hosts_result) {
                 hosts_dict = window.hosts_result[index];
                 for (var ip in hosts_dict) {
@@ -183,7 +182,6 @@
                     }
                 }
             }
-            console.log();
         });
 
         document.getElementById("host_search").addEventListener('click', function () {
