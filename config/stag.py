@@ -15,6 +15,8 @@ RUN_MODE = 'STAGING'
 
 
 # 预发布环境数据库可以在这里配置
+# (以下内容修改为你自己的, 正式开发勿泄漏)
+
 DATABASES.update(
     {
         'default': {

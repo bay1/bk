@@ -24,6 +24,7 @@ DEBUG = True
 # 本地开发数据库设置
 # USE FOLLOWING SQL TO CREATE THE DATABASE NAMED APP_CODE
 # SQL: CREATE DATABASE `openpaas_test_v2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; # noqa: E501
+# (以下内容修改为你自己的, 正式开发勿泄漏)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

@@ -1,3 +1,7 @@
+#### [调用官方API–快速执行脚本 DOC](doc/fourth-homework.md)
+
+#### [接入一个自己研发的的API  DOC](doc/fifth-homework.md)
+
 蓝鲸智云应用开发模板--助力你的自动化
 这里有各种层次的应用样例，根据你的需要，选择合适的样例开始快速开发。
 
@@ -41,7 +45,3 @@
 	- conf/dev.py 文件：DATABASES（本地开发数据库信息）
 	- conf/stag.py 文件：DATABASES（测试环境数据库信息）
 	- conf/prod.py 文件：DATABASES（正式环境数据库信息）
-	
-#### [调用官方API–快速执行脚本 DOC](doc/fourth-homework.md)
-
-#### [接入一个自己研发的的API  DOC](doc/fifth-homework.md)

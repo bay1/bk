@@ -10,6 +10,7 @@ import os
 from blueapps.core.celery import celery_app
 
 # app 基本信息
+# (以下内容修改为你自己的, 正式开发勿泄漏)
 
 # SaaS运行版本，如非必要请勿修改
 RUN_VER = 'open'
